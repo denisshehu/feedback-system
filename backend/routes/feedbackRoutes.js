@@ -3,9 +3,9 @@ const express = require("express");
 const {
   getFeedbacks,
   getFeedback,
-  createFeedback,
+  postFeedback,
   deleteFeedback,
-  updateFeedback,
+  patchFeedback,
 } = require("../controllers/feedbackController");
 
 const router = express.Router();
@@ -17,12 +17,12 @@ router.get("/", getFeedbacks);
 router.get("/:id", getFeedback);
 
 // POST a new feedback
-router.post("/", createFeedback);
+router.post("/", postFeedback);
 
 // DELETE a feedback
 router.delete("/:id", deleteFeedback);
 
 // PATCH a feedback
-router.patch("/:id", updateFeedback);
+router.patch("/:id", patchFeedback);
 
 module.exports = router;

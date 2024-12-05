@@ -1,0 +1,240 @@
+@import url("https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap");
+
+* {
+  --primary: #c01e21;
+  --light-primary: #f9e9e9;
+  --error: #df3235;
+  --light-gray: #f1f1f1;
+  --gray: #d9d9d9;
+  --yellow: #fdcc0d;
+  --border-radius: 10px;
+  --left-width: 15%;
+  --light: 300;
+  --regular: 400;
+  --medium: 500;
+  --semi-bold: 600;
+  --bold: 700;
+  font-family: "Parkinsans", sans-serif;
+  font-weight: var(--regular);
+  cursor: default;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--error);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  background-color: var(--gray);
+}
+
+.button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-button {
+  background-color: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  margin-right: 200px;
+}
+
+.cancel-button:hover {
+  background-color: var(--light-primary);
+}
+
+.error {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--light-primary);
+  border: 2px solid var(--error);
+  border-radius: var(--border-radius);
+  color: var(--error);
+}
+
+body {
+  background: var(--light-gray);
+  margin: 0;
+}
+
+header {
+  background: white;
+}
+
+.navigation-bar {
+  padding: 10px 20px;
+}
+
+header a {
+  color: black;
+  text-decoration: none;
+}
+
+header h1 {
+  font-weight: var(--semi-bold);
+  cursor: pointer;
+}
+
+.pages {
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Feedbacks page */
+.feedbacks-page {
+  width: 80%;
+  margin: auto;
+}
+
+.feedback-card {
+  background: white;
+  border-radius: var(--border-radius);
+  margin: 20px auto;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-card h3 {
+  font-weight: var(--semi-bold);
+  margin: 0;
+}
+
+.rating-stars .material-symbols-rounded.on {
+  color: var(--yellow);
+}
+
+.rating-stars .material-symbols-rounded.off {
+  color: var(--gray);
+}
+
+.rating-stars .material-symbols-rounded.dynamic {
+  cursor: pointer;
+}
+
+.comments {
+  margin: 10px 0;
+  font-weight: var(--light);
+}
+
+.created-at,
+.updated-at {
+  margin: 0;
+  font-size: 13px;
+  font-weight: var(--semi-bold);
+}
+
+.card-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.card-buttons .material-symbols-rounded {
+  margin-left: 10px;
+  padding: 5px;
+  background-color: var(--light-gray);
+  color: black;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card-buttons .material-symbols-rounded:nth-child(1):hover {
+  background-color: var(--gray);
+  color: black;
+}
+
+.card-buttons .material-symbols-rounded:nth-child(2):hover {
+  background-color: var(--error);
+  color: white;
+}
+
+form h1 {
+  color: var(--primary);
+  font-weight: var(--bold);
+  margin: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Distance between rows */
+  width: 80%; /* Form width, adjust as needed */
+  margin: 0 auto; /* Center horizontally */
+  padding: 20px; /* Padding inside the form */
+  box-sizing: border-box; /* Include padding in the width */
+}
+
+/* Form row styling */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px; /* Additional spacing if needed */
+}
+
+/* Left column styling */
+.left {
+  flex: 0 0 calc(var(--left-width) - 20px); /* Takes x% of the row */
+  text-align: right;
+  font-weight: var(--medium);
+}
+
+/* Right column styling */
+.right {
+  flex: 0 0 calc(100% - var(--left-width) - 20px); /* Takes (100-x)% */
+  text-align: center;
+}
+
+.right .rating-stars {
+  text-align: left;
+}
+
+/* Inputs inside the right column */
+select,
+input,
+textarea {
+  width: 100%; /* Inputs stretch to fill the right column */
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* Not found page */
+.not-found-page {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.not-found-page .oops {
+  font-size: 100px;
+  font-weight: var(--bold);
+  text-align: center;
+  color: var(--primary);
+}
+
+.not-found-page p {
+  font-size: 20px;
+  text-align: center;
+  margin: 0 0 40px 0;
+}
