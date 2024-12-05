@@ -2,7 +2,9 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
+const serviceRoutes = require("./routes/serviceRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 
 // express app
@@ -10,8 +12,10 @@ const app = express();
 
 // middleware
 app.use(express.json());
+app.use(cors());
 
 // routes
+app.use("/api/services", serviceRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 
 // connect to the database

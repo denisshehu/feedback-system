@@ -1,5 +1,6 @@
-const Feedback = require("../models/feedbackModel");
 const mongoose = require("mongoose");
+
+const Feedback = require("../models/feedbackModel");
 
 // GET all feedbacks
 const getFeedbacks = async (req, res) => {
@@ -26,8 +27,12 @@ const getFeedback = async (req, res) => {
 };
 
 // POST a new feedback
-const createFeedback = async (req, res) => {
+const postFeedback = async (req, res) => {
   const { user_id, service_id, rating, comments } = req.body;
+
+  if (!service_id || !rating || !comments) {
+    return res.status(400).json({ error: "Please fill in all the fields." });
+  }
 
   try {
     const feedback = await Feedback.create({
@@ -36,6 +41,7 @@ const createFeedback = async (req, res) => {
       rating,
       comments,
     });
+
     res.status(200).json(feedback);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -60,7 +66,7 @@ const deleteFeedback = async (req, res) => {
 };
 
 // PATCH a feedback
-const updateFeedback = async (req, res) => {
+const patchFeedback = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -79,7 +85,7 @@ const updateFeedback = async (req, res) => {
 module.exports = {
   getFeedbacks,
   getFeedback,
-  createFeedback,
+  postFeedback,
   deleteFeedback,
-  updateFeedback,
+  patchFeedback,
 };
