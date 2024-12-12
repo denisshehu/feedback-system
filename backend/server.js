@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const userRoutes = require("./routes/userRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 // routes
+app.use("/api/users", userRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 
@@ -25,7 +27,7 @@ mongoose
     // listen for requests
     app.listen(process.env.PORT, () => {
       console.log(
-        `Connected to the database, and listening on port ${process.env.PORT}.`
+        `The server is connected to the database, and listening on port ${process.env.PORT}.`
       );
     });
   })

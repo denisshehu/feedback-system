@@ -1,5 +1,7 @@
 const express = require("express");
 
+const requireAuthentication = require("../middleware/requireAuthentication");
+
 const {
   getServices,
   postService,
@@ -8,6 +10,9 @@ const {
 
 const router = express.Router();
 
+// middleware
+router.use(requireAuthentication);
+
 // GET all services
 router.get("/", getServices);
 
@@ -15,6 +20,6 @@ router.get("/", getServices);
 router.post("/", postService);
 
 // DELETE a service
-router.delete("/:id", deleteService);
+router.delete("/:id/", deleteService);
 
 module.exports = router;
