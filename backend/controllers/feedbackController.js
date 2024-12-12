@@ -2,37 +2,53 @@ const mongoose = require("mongoose");
 
 const Feedback = require("../models/feedbackModel");
 
+const isIdValid = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const ERROR_MESSAGES = {
+  INVALID_ID: "Invalid feedback ID.",
+  NOT_FOUND: "No feedback found with this ID.",
+  GET_ALL: "Failed to get feedbacks.",
+  GET_ONE: "Failed to get feedback.",
+  POST: "Failed to post feedback.",
+  DELETE: "Failed to delete feedback.",
+  PATCH: "Failed to patch feedback.",
+};
+
 // GET all feedbacks
 const getFeedbacks = async (req, res) => {
-  const feedbacks = await Feedback.find({}).sort({ createdAt: -1 });
-
-  res.status(200).json(feedbacks);
+  try {
+    const user_id = req.user._id;
+    const feedbacks = await Feedback.find({ user_id }).sort({ createdAt: -1 });
+    res.status(200).json(feedbacks);
+  } catch (error) {
+    res.status(500).json({ error: ERROR_MESSAGES.GET_ALL });
+  }
 };
 
 // GET a single feedback
 const getFeedback = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such feedback exists." });
+  if (!isIdValid(id)) {
+    return res.status(400).json({ error: ERROR_MESSAGES.INVALID_ID });
   }
 
-  const feedback = await Feedback.findById(id);
+  try {
+    const feedback = await Feedback.findById(id);
 
-  if (!feedback) {
-    return res.status(404).json({ error: "No such feedback exists." });
+    if (!feedback) {
+      return res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
+    }
+
+    res.status(200).json(feedback);
+  } catch (error) {
+    res.status(500).json({ error: ERROR_MESSAGES.GET_ONE });
   }
-
-  res.status(200).json(feedback);
 };
 
 // POST a new feedback
 const postFeedback = async (req, res) => {
   const { user_id, service_id, rating, comments } = req.body;
-
-  if (!service_id || !rating || !comments) {
-    return res.status(400).json({ error: "Please fill in all the fields." });
-  }
 
   try {
     const feedback = await Feedback.create({
@@ -42,9 +58,9 @@ const postFeedback = async (req, res) => {
       comments,
     });
 
-    res.status(200).json(feedback);
+    res.status(201).json(feedback);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: ERROR_MESSAGES.POST });
   }
 };
 
@@ -52,34 +68,42 @@ const postFeedback = async (req, res) => {
 const deleteFeedback = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such feedback exists." });
+  if (!isIdValid(id)) {
+    return res.status(400).json({ error: ERROR_MESSAGES.INVALID_ID });
   }
 
-  const feedback = await Feedback.findByIdAndDelete(id);
+  try {
+    const feedback = await Feedback.findByIdAndDelete(id);
 
-  if (!feedback) {
-    return res.status(404).json({ error: "No such feedback exists." });
+    if (!feedback) {
+      return res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
+    }
+
+    res.status(200).json(feedback);
+  } catch (error) {
+    res.status(500).json({ error: ERROR_MESSAGES.DELETE });
   }
-
-  res.status(200).json(feedback);
 };
 
 // PATCH a feedback
 const patchFeedback = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such feedback exists." });
+  if (!isIdValid(id)) {
+    return res.status(400).json({ error: ERROR_MESSAGES.INVALID_ID });
   }
 
-  const feedback = await Feedback.findByIdAndUpdate(id, { ...req.body });
+  try {
+    const feedback = await Feedback.findByIdAndUpdate(id, { ...req.body });
 
-  if (!feedback) {
-    return res.status(404).json({ error: "No such feedback exists." });
+    if (!feedback) {
+      return res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
+    }
+
+    res.status(200).json({ feedback, ...req.body });
+  } catch (error) {
+    res.status(500).json({ error: ERROR_MESSAGES.PATCH });
   }
-
-  res.status(200).json(feedback);
 };
 
 module.exports = {

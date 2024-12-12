@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { deleteFeedback } from "../utils/api";
 
 // contexts
+import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 import { useServiceContext } from "../hooks/useServiceContext";
 import { useFeedbackContext } from "../hooks/useFeedbackContext";
 
@@ -11,6 +12,7 @@ import { useFeedbackContext } from "../hooks/useFeedbackContext";
 import RatingStars from "./RatingStars";
 
 const FeedbackCard = ({ feedback }) => {
+  const { user } = useAuthenticationContext();
   const { services } = useServiceContext();
   const { dispatch } = useFeedbackContext();
 
@@ -21,13 +23,18 @@ const FeedbackCard = ({ feedback }) => {
     return `${format(date, "dd MMM yyyy")} at ${format(date, "HH:mm")}`;
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = (event) => {
+    event.preventDefault();
+
     localStorage.setItem("feedbackToUpdate", JSON.stringify(feedback));
+
     navigate("/update");
   };
 
-  const handleDelete = () => {
-    deleteFeedback(feedback._id, dispatch);
+  const handleDelete = async (event) => {
+    event.preventDefault();
+
+    await deleteFeedback(feedback._id, user.token, dispatch);
   };
 
   return (

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getServices, getFeedbacks } from "../utils/api";
 
 // contexts
+import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 import { useServiceContext } from "../hooks/useServiceContext";
 import { useFeedbackContext } from "../hooks/useFeedbackContext";
 
@@ -11,18 +12,25 @@ import { useFeedbackContext } from "../hooks/useFeedbackContext";
 import FeedbackCard from "../components/FeedbackCard";
 
 const Feedbacks = () => {
+  const { user } = useAuthenticationContext();
   const { dispatch: servicesDispatch } = useServiceContext();
   const { feedbacks, dispatch: feedbacksDispatch } = useFeedbackContext();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    getServices(servicesDispatch);
-  }, [servicesDispatch]);
+    if (user) {
+      getServices(user.token, servicesDispatch);
+    }
+  }, [user, servicesDispatch]);
 
   useEffect(() => {
-    getFeedbacks(feedbacksDispatch);
-  }, [feedbacksDispatch]);
+    if (user) {
+      getFeedbacks(user.token, feedbacksDispatch);
+    }
+
+    localStorage.removeItem("feedbackToUpdate");
+  }, [user, feedbacksDispatch]);
 
   return (
     <div className="feedbacks-page">

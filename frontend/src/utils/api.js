@@ -1,42 +1,98 @@
-const fetchData = async (endpoint, id, method, body, dispatch, actionType) => {
-  const url = `http://localhost:4000/api/${endpoint}/${id ? id : ""}`;
+import axios from "axios";
 
-  const response = await fetch(url, {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: body ? JSON.stringify(body) : body,
-  });
+const fetchData = async (
+  endpoint,
+  id,
+  method,
+  token,
+  body,
+  dispatch,
+  actionType
+) => {
+  const backendPort = process.env.REACT_APP_BACKEND_PORT;
 
-  if (response.ok) {
-    if (actionType.split("_")[0] !== "PATCH") {
-      const data = await response.json();
-      dispatch({ type: actionType, payload: data });
-    } else {
-      dispatch({ type: actionType, payload: body });
-    }
+  const url = `http://localhost:${backendPort}/api/${endpoint}/${id ? id : ""}`;
+
+  try {
+    const response = await axios({
+      url,
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authentication: `Bearer ${token}`,
+      },
+      data: body || undefined,
+    });
+
+    const data = response.data;
+
+    dispatch({ type: actionType, payload: data });
+
+    return { isResponseOkay: true, data };
+  } catch (error) {
+    return { isResponseOkay: false, data: error.response.data };
   }
+};
 
-  return response;
+// SIGN UP a new user
+export const signUpUser = async (name, email, password, role, dispatch) => {
+  return await fetchData(
+    "users/signup",
+    null,
+    "POST",
+    null,
+    { name, email, password, role },
+    dispatch,
+    "SIGN_IN"
+  );
+};
+
+// SIGN IN a user
+export const signInUser = async (email, password, dispatch) => {
+  return await fetchData(
+    "users/signin",
+    null,
+    "POST",
+    null,
+    { email, password },
+    dispatch,
+    "SIGN_IN"
+  );
 };
 
 // GET all services
-export const getServices = (dispatch) => {
-  return fetchData("services", null, "GET", null, dispatch, "GET_SERVICES");
+export const getServices = async (token, dispatch) => {
+  return await fetchData(
+    "services",
+    null,
+    "GET",
+    token,
+    null,
+    dispatch,
+    "GET_SERVICES"
+  );
 };
 
 // GET all feedbacks
-export const getFeedbacks = (dispatch) => {
-  return fetchData("feedbacks", null, "GET", null, dispatch, "GET_FEEDBACKS");
+export const getFeedbacks = async (token, dispatch) => {
+  return await fetchData(
+    "feedbacks",
+    null,
+    "GET",
+    token,
+    null,
+    dispatch,
+    "GET_FEEDBACKS"
+  );
 };
 
 // POST a new feedback
-export const postFeedback = (feedback, dispatch) => {
-  return fetchData(
+export const postFeedback = async (token, feedback, dispatch) => {
+  return await fetchData(
     "feedbacks",
     null,
     "POST",
+    token,
     feedback,
     dispatch,
     "POST_FEEDBACK"
@@ -44,11 +100,12 @@ export const postFeedback = (feedback, dispatch) => {
 };
 
 // DELETE a feedback
-export const deleteFeedback = (id, dispatch) => {
-  return fetchData(
+export const deleteFeedback = async (id, token, dispatch) => {
+  return await fetchData(
     "feedbacks",
     id,
     "DELETE",
+    token,
     null,
     dispatch,
     "DELETE_FEEDBACK"
@@ -56,11 +113,12 @@ export const deleteFeedback = (id, dispatch) => {
 };
 
 // PATCH a feedback
-export const patchFeedback = (id, updatedFeedback, dispatch) => {
-  return fetchData(
+export const patchFeedback = async (id, token, updatedFeedback, dispatch) => {
+  return await fetchData(
     "feedbacks",
     id,
     "PATCH",
+    token,
     updatedFeedback,
     dispatch,
     "PATCH_FEEDBACK"
