@@ -10,9 +10,6 @@ const NavigationBar = () => {
 
   const navigate = useNavigate();
 
-  const isCustomer = user?.role === "customer";
-  const link = !user ? "/" : isCustomer ? "/feedbacks" : "/admin";
-
   const handleClick = () => {
     localStorage.removeItem("user");
     dispatchAuthentication({ type: "SIGN_OUT" });
@@ -23,7 +20,7 @@ const NavigationBar = () => {
   return (
     <header>
       <div className="navigation-bar">
-        <Link to={link}>
+        <Link to={"/"}>
           <h1>Feedback system</h1>
         </Link>
         {user && (

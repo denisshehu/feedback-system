@@ -7,6 +7,7 @@ import App from "./App";
 import { AuthenticationContextProvider } from "./contexts/AuthenticationContext";
 import { ServiceContextProvider } from "./contexts/ServiceContext";
 import { FeedbackContextProvider } from "./contexts/FeedbackContext";
+import { AnalyticsContextProvider } from "./contexts/AnalyticsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,7 +15,9 @@ root.render(
     <AuthenticationContextProvider>
       <ServiceContextProvider>
         <FeedbackContextProvider>
-          <App />
+          <AnalyticsContextProvider>
+            <App />
+          </AnalyticsContextProvider>
         </FeedbackContextProvider>
       </ServiceContextProvider>
     </AuthenticationContextProvider>

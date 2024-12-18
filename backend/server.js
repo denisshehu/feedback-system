@@ -4,9 +4,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const scheduleEtl = require("./etl/index");
+
 const userRoutes = require("./routes/userRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
 // express app
 const app = express();
@@ -19,6 +22,7 @@ app.use(cors());
 app.use("/api/users", userRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // connect to the database
 mongoose
@@ -33,4 +37,7 @@ mongoose
   })
   .catch((error) => {
     console.log(error);
+  })
+  .then(() => {
+    scheduleEtl();
   });
