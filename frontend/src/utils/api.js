@@ -19,18 +19,21 @@ const fetchData = async (
       method,
       headers: {
         "Content-Type": "application/json",
-        Authentication: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       data: body || undefined,
     });
 
-    const data = response.data;
+    const data =
+      actionType === "GET_ANALYTICS" ? response.data[0] : response.data;
 
     dispatch({ type: actionType, payload: data });
 
     return { isResponseOkay: true, data };
   } catch (error) {
-    return { isResponseOkay: false, data: error.response.data };
+    const data = error.response?.data || error.message;
+
+    return { isResponseOkay: false, data };
   }
 };
 
@@ -122,5 +125,18 @@ export const patchFeedback = async (id, token, updatedFeedback, dispatch) => {
     updatedFeedback,
     dispatch,
     "PATCH_FEEDBACK"
+  );
+};
+
+// GET analytics
+export const getAnalytics = async (token, dispatch) => {
+  return await fetchData(
+    "analytics",
+    null,
+    "GET",
+    token,
+    null,
+    dispatch,
+    "GET_ANALYTICS"
   );
 };

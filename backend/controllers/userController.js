@@ -6,7 +6,7 @@ const User = require("../models/userModel");
 const isIdValid = (id) => mongoose.Types.ObjectId.isValid(id);
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.SECRET, { expiresIn: "3d" });
+  return jwt.sign({ id }, process.env.SECRET, { expiresIn: "1h" });
 };
 
 const ERROR_MESSAGES = {

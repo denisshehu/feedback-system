@@ -17,8 +17,16 @@ const ERROR_MESSAGES = {
 // GET all feedbacks
 const getFeedbacks = async (req, res) => {
   try {
-    const user_id = req.user._id;
-    const feedbacks = await Feedback.find({ user_id }).sort({ createdAt: -1 });
+    let feedbacks;
+
+    if (req.user.role === "admin") {
+      feedbacks = await Feedback.find({}).sort({ createdAt: -1 });
+    } else {
+      feedbacks = await Feedback.find({ user_id: req.user._id }).sort({
+        createdAt: -1,
+      });
+    }
+
     res.status(200).json(feedbacks);
   } catch (error) {
     res.status(500).json({ error: ERROR_MESSAGES.GET_ALL });

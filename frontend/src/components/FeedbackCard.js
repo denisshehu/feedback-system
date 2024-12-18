@@ -42,7 +42,7 @@ const FeedbackCard = ({ feedback }) => {
       <h3>
         Feedback to{" "}
         {services.length &&
-          services.find((service) => service._id === feedback.service_id).name}
+          services.find((service) => service._id === feedback.service_id)?.name}
       </h3>
 
       <RatingStars defaultRating={feedback.rating} isStatic={true} />

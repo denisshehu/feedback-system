@@ -73,11 +73,13 @@ const FeedbackForm = ({
               value={service_id}
             >
               <option value="">Select a service</option>
-              {services.map((service) => (
-                <option key={service._id} value={service._id}>
-                  {service.name}
-                </option>
-              ))}
+              {services
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((service) => (
+                  <option key={service._id} value={service._id}>
+                    {service.name}
+                  </option>
+                ))}
             </select>
           </div>
         </div>

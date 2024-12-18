@@ -42,7 +42,7 @@ userSchema.statics.signUp = async function (name, email, password, role) {
   }
 
   if (await this.findOne({ email })) {
-    throw Error("The provided email is already in user.");
+    throw Error("The provided email is already in use.");
   }
 
   const salt = await bcrypt.genSalt();

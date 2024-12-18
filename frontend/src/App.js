@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+// contexts
 import { useAuthenticationContext } from "./hooks/useAuthenticationContext";
 
 // pages
@@ -19,6 +20,14 @@ function App() {
 
   const isCustomer = user?.role === "customer";
 
+  const navigate = (pageWhenNotSigned, pageWhenCustomer, pageWhenAdmin) => {
+    return !user
+      ? pageWhenNotSigned
+      : isCustomer
+      ? pageWhenCustomer
+      : pageWhenAdmin;
+  };
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -27,34 +36,58 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={
-                !user ? (
-                  <SignIn />
-                ) : isCustomer ? (
-                  <Navigate to="/feedbacks" />
-                ) : (
-                  <Navigate to="/admin" />
-                )
-              }
+              element={navigate(
+                <SignIn />,
+                <Navigate to={"/feedbacks"} />,
+                <Navigate to={"/admin"} />
+              )}
             />
 
             <Route
               path="/signup"
-              element={
-                !user ? (
-                  <SignUp />
-                ) : isCustomer ? (
-                  <Navigate to="/feedbacks" />
-                ) : (
-                  <Navigate to="/admin" />
-                )
-              }
+              element={navigate(
+                <SignUp />,
+                <Navigate to={"/feedbacks"} />,
+                <Navigate to={"/admin"} />
+              )}
             />
 
-            <Route path="/feedbacks" element={<Feedbacks />} />
-            <Route path="/submit" element={<Submit />} />
-            <Route path="/update" element={<Update />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route
+              path="/feedbacks"
+              element={navigate(
+                <Navigate to={"/"} />,
+                <Feedbacks />,
+                <Navigate to={"/admin"} />
+              )}
+            />
+
+            <Route
+              path="/submit"
+              element={navigate(
+                <Navigate to={"/"} />,
+                <Submit />,
+                <Navigate to={"/admin"} />
+              )}
+            />
+
+            <Route
+              path="/update"
+              element={navigate(
+                <Navigate to={"/"} />,
+                <Update />,
+                <Navigate to={"/admin"} />
+              )}
+            />
+
+            <Route
+              path="/admin"
+              element={navigate(
+                <Navigate to={"/"} />,
+                <Navigate to={"/feedbacks"} />,
+                <Admin />
+              )}
+            />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

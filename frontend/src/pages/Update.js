@@ -42,7 +42,7 @@ const Update = () => {
     }
   };
 
-  return (
+  return !feedback ? null : (
     <FeedbackForm
       isInsideSubmit={false}
       feedback={feedback}
