@@ -53,7 +53,7 @@ const calculateAverage = (array) => {
 };
 
 const calculateSubmissionTrend = (services, feedbacks) => {
-  const dates = getDates(services);
+  const dates = getDates(services, feedbacks);
 
   const submission_trend = new Map();
 
@@ -73,8 +73,11 @@ const calculateSubmissionTrend = (services, feedbacks) => {
   }));
 };
 
-const getDates = (services) => {
-  const startTime = min(services.map((service) => service.createdAt));
+const getDates = (services, feedbacks) => {
+  const timestamps = [...services, ...feedbacks].map(
+    (element) => element.createdAt
+  );
+  const startTime = timestamps.length ? min(timestamps) : new Date();
   const endTime = new Date();
 
   return eachDayOfInterval({ start: startTime, end: endTime }).map((date) =>

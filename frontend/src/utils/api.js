@@ -9,9 +9,9 @@ const fetchData = async (
   dispatch,
   actionType
 ) => {
-  const backendPort = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-  const url = `http://localhost:${backendPort}/api/${endpoint}/${id ? id : ""}`;
+  const url = `${backendUrl}/api/${endpoint}/${id ? id : ""}`;
 
   try {
     const response = await axios({
@@ -38,13 +38,13 @@ const fetchData = async (
 };
 
 // SIGN UP a new user
-export const signUpUser = async (name, email, password, role, dispatch) => {
+export const signUpUser = async (name, email, password, dispatch) => {
   return await fetchData(
     "users/signup",
     null,
     "POST",
     null,
-    { name, email, password, role },
+    { name, email, password },
     dispatch,
     "SIGN_IN"
   );

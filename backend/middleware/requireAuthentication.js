@@ -16,6 +16,10 @@ const requireAuthentication = async (req, res, next) => {
 
     req.user = await User.findById(id).select("_id role");
 
+    if (!req.user) {
+      return res.status(401).json({ error: "Request is not authorized." });
+    }
+
     next();
   } catch (error) {
     res.status(401).json({ error: "Request is not authorized." });

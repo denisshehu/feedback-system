@@ -4,7 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-const scheduleEtl = require("./etl/index");
+const { scheduleEtl } = require("./etl/index");
 
 const userRoutes = require("./routes/userRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
@@ -34,10 +34,9 @@ mongoose
         `The server is connected to the database, and listening on port ${process.env.PORT}.`
       );
     });
+
+    scheduleEtl();
   })
   .catch((error) => {
     console.log(error);
-  })
-  .then(() => {
-    scheduleEtl();
   });

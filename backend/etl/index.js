@@ -5,6 +5,8 @@ const transform = require("./transform");
 const load = require("./load");
 
 const scheduleEtl = () => {
+  etl();
+
   cron.schedule(process.env.UPDATE_TIME, async () => {
     await etl();
   });
@@ -16,7 +18,7 @@ const etl = async () => {
 
     const { averageRatings, submissionTrend } = transform(services, feedbacks);
 
-    load(averageRatings, submissionTrend);
+    await load(averageRatings, submissionTrend);
 
     console.log("Analytics updated.");
   } catch (error) {
@@ -24,4 +26,4 @@ const etl = async () => {
   }
 };
 
-module.exports = scheduleEtl;
+module.exports = { scheduleEtl, etl };

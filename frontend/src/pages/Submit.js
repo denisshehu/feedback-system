@@ -20,7 +20,7 @@ const Submit = () => {
   };
 
   const handleSubmit = async ({ service_id, rating, comments }) => {
-    const feedback = { user_id: user.id, service_id, rating, comments };
+    const feedback = { service_id, rating, comments };
 
     const { isResponseOkay, data } = await postFeedback(
       user.token,

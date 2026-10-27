@@ -1,6 +1,7 @@
 const express = require("express");
 
 const requireAuthentication = require("../middleware/requireAuthentication");
+const requireAdmin = require("../middleware/requireAdmin");
 
 const {
   getServices,
@@ -17,9 +18,9 @@ router.use(requireAuthentication);
 router.get("/", getServices);
 
 // POST a new service
-router.post("/", postService);
+router.post("/", requireAdmin, postService);
 
 // DELETE a service
-router.delete("/:id/", deleteService);
+router.delete("/:id/", requireAdmin, deleteService);
 
 module.exports = router;

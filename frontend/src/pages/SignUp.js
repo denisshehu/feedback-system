@@ -18,7 +18,6 @@ const SignUp = () => {
       name,
       email,
       password,
-      "customer",
       dispatch
     );
 

@@ -19,7 +19,9 @@ const ERROR_MESSAGES = {
 // GET all users
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const users = await User.find({})
+      .select("-password")
+      .sort({ createdAt: -1 });
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: ERROR_MESSAGES.GET });
@@ -35,7 +37,7 @@ const deleteUser = async (req, res) => {
   }
 
   try {
-    const user = await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id).select("-password");
 
     if (!user) {
       return res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
@@ -49,16 +51,16 @@ const deleteUser = async (req, res) => {
 
 // SIGN UP a new user
 const signUpUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   try {
-    const user = await User.signUp(name, email, password, role);
+    const user = await User.signUp(name, email, password, "customer");
 
     const token = createToken(user._id);
 
     res.status(201).json({ id: user._id, email, role: user.role, token });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -73,7 +75,7 @@ const signInUser = async (req, res) => {
 
     res.status(200).json({ id: user._id, email, role: user.role, token });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(401).json({ error: error.message });
   }
 };
 

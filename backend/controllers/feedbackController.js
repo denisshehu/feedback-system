@@ -4,9 +4,13 @@ const Feedback = require("../models/feedbackModel");
 
 const isIdValid = (id) => mongoose.Types.ObjectId.isValid(id);
 
+const isUserAllowed = (user, feedback) =>
+  user.role === "admin" || feedback.user_id === String(user._id);
+
 const ERROR_MESSAGES = {
   INVALID_ID: "Invalid feedback ID.",
   NOT_FOUND: "No feedback found with this ID.",
+  FORBIDDEN: "Not allowed to access this feedback.",
   GET_ALL: "Failed to get feedbacks.",
   GET_ONE: "Failed to get feedback.",
   POST: "Failed to post feedback.",
@@ -48,6 +52,10 @@ const getFeedback = async (req, res) => {
       return res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
     }
 
+    if (!isUserAllowed(req.user, feedback)) {
+      return res.status(403).json({ error: ERROR_MESSAGES.FORBIDDEN });
+    }
+
     res.status(200).json(feedback);
   } catch (error) {
     res.status(500).json({ error: ERROR_MESSAGES.GET_ONE });
@@ -56,11 +64,11 @@ const getFeedback = async (req, res) => {
 
 // POST a new feedback
 const postFeedback = async (req, res) => {
-  const { user_id, service_id, rating, comments } = req.body;
+  const { service_id, rating, comments } = req.body;
 
   try {
     const feedback = await Feedback.create({
-      user_id,
+      user_id: String(req.user._id),
       service_id,
       rating,
       comments,
@@ -81,11 +89,17 @@ const deleteFeedback = async (req, res) => {
   }
 
   try {
-    const feedback = await Feedback.findByIdAndDelete(id);
+    const feedback = await Feedback.findById(id);
 
     if (!feedback) {
       return res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
     }
+
+    if (!isUserAllowed(req.user, feedback)) {
+      return res.status(403).json({ error: ERROR_MESSAGES.FORBIDDEN });
+    }
+
+    await feedback.deleteOne();
 
     res.status(200).json(feedback);
   } catch (error) {
@@ -102,13 +116,21 @@ const patchFeedback = async (req, res) => {
   }
 
   try {
-    const feedback = await Feedback.findByIdAndUpdate(id, { ...req.body });
+    const feedback = await Feedback.findById(id);
 
     if (!feedback) {
       return res.status(404).json({ error: ERROR_MESSAGES.NOT_FOUND });
     }
 
-    res.status(200).json({ feedback, ...req.body });
+    if (!isUserAllowed(req.user, feedback)) {
+      return res.status(403).json({ error: ERROR_MESSAGES.FORBIDDEN });
+    }
+
+    const { rating, comments } = req.body;
+    feedback.set({ rating, comments });
+    await feedback.save();
+
+    res.status(200).json(feedback);
   } catch (error) {
     res.status(500).json({ error: ERROR_MESSAGES.PATCH });
   }
